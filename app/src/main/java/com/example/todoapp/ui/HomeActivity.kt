@@ -16,11 +16,12 @@ import com.example.todoapp.TOKEN
 import com.example.todoapp.databinding.ActivityHomeBinding
 import com.example.todoapp.retrofit.Data2
 import com.example.todoapp.retrofit.RequestInput
+import okhttp3.internal.notify
 
 class HomeActivity : AppCompatActivity() {
     lateinit var binding:ActivityHomeBinding
     lateinit var viewModel: MainViewModel
-
+    lateinit var adapter:Adapter
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -30,18 +31,32 @@ class HomeActivity : AppCompatActivity() {
 //        if(token!="null"){
 //            goHome()
 //        }
+        adapter = Adapter()
+        viewModel.getAll(token)
+
+        viewModel.list.observe(this){
+            if(it.statusCode==2100){
+                setUserData(it.data)
+            }else{
+                Toast.makeText(this,"Gagal mengambil data",Toast.LENGTH_SHORT).show()
+            }
+        }
+
         val layoutManager = LinearLayoutManager(this)
         binding.rv.layoutManager=layoutManager
 
         binding.btnInput.setOnClickListener{
             val text=binding.etInput.text.toString().trim()
             if(text!=""){
+                binding.etInput.setText("")
                 viewModel.inputData(RequestInput(text),token)
             }
         }
 
         viewModel.input.observe(this){
             if(it.statusCode==2000){
+                viewModel.getAll(token)
+                adapter.notifyDataSetChanged()
                 // TODO refresh adapter
                 Toast.makeText(this,"Berhasil menyimpan",Toast.LENGTH_SHORT).show()
             }else{
@@ -56,7 +71,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setUserData(user: List<Data2>) {
-        val adapter = Adapter(user)
+        adapter.setData(user)
         binding.rv.adapter = adapter
 
         adapter.setOnItemClickCallback(object : Adapter.OnItemClickCallback {

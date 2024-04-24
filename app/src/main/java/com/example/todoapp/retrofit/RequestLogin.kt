@@ -40,3 +40,8 @@ data class Data2(
     val items:String?,
     val checklistCompletionStatus:Boolean
 )
+
+data class ResponseData(
+    val statusCode:Int,
+    val data:List<Data2>
+)

@@ -11,8 +11,9 @@ import com.example.todoapp.retrofit.ResponseLogin
 class MainViewModel(private val repo: Repository):ViewModel() {
     val isLoading: LiveData<Boolean> = repo.isLoading
 
-    var userlogin: LiveData<ResponseLogin> = repo.userlogin
-    var input: LiveData<ResponseInput> = repo.input
+    var userlogin = repo.userlogin
+    var input= repo.input
+    var list = repo.list
 
     fun getResponseLogin(requestLogin: RequestLogin) {
         repo.getResponseLogin(requestLogin)
@@ -20,5 +21,9 @@ class MainViewModel(private val repo: Repository):ViewModel() {
 
     fun inputData(requestInput: RequestInput,token:String){
         repo.getResponseInput(requestInput,token)
+    }
+
+    fun getAll(token:String){
+        repo.getResponseAll(token)
     }
 }

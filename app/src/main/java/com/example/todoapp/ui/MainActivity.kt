@@ -30,10 +30,12 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(this, RepoViewModelFactory(this))[MainViewModel::class.java]
 //        goHome()
-//        val token = Preference.readStringPreference(this, TOKEN,"null")
+        val token = Preference.readStringPreference(this, TOKEN,"null")
 //        if(token!="null"){
 //            goHome()
 //        }
+
+
         val emailStream = RxTextView.textChanges(binding.etMasukEmail)
             .skipInitialValue()
             .map { name ->
